@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mockinstagram/constants/colors.dart';
+import 'package:mockinstagram/data/page_data.dart';
+
+
 
 class MainBottomNavigationBar extends StatefulWidget {
   const MainBottomNavigationBar({Key? key}) : super(key: key);
@@ -24,32 +28,60 @@ class _MainBottomNavigationBarState extends State<MainBottomNavigationBar> {
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
         setState(() {
+          PageData.currentIndex = index;
           _currentIndex = index;
         });
       },
     );
   }
 
-   List<BottomNavigationBarItem> _bottomNavigationBarItems() => [
-     BottomNavigationBarItem(
-      icon: Icon(_currentIndex == 0 ? Icons.home_filled : Icons.home_outlined),
-      label: "Home",
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.search),
-      label: "Search",
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.add_box_outlined),
-      label: "Add",
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.favorite_border),
-      label: "Favourites",
-    ),
-    const BottomNavigationBarItem(
-      icon: CircleAvatar(),
-      label: "Profile",
-    ),
-  ];
+  List<BottomNavigationBarItem> _bottomNavigationBarItems() => [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            _currentIndex == 0
+                ? "assets/icons/home_active_icon.svg"
+                : "assets/icons/home_icon.svg",
+            height: 24.0,
+            color: kColorBlack,
+          ),
+          label: "Home",
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            _currentIndex == 1
+                ? "assets/icons/search_active_icon.svg"
+                : "assets/icons/search_icon.svg",
+            height: 24.0,
+            color: kColorBlack,
+          ),
+          label: "Search",
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            _currentIndex == 2
+                ? "assets/icons/upload_active_icon.svg"
+                : "assets/icons/upload_icon.svg",
+            height: 24.0,
+            color: kColorBlack,
+          ),
+          label: "Upload",
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(
+            _currentIndex == 3
+                ? "assets/icons/love_active_icon.svg"
+                : "assets/icons/love_icon.svg",
+            height: 24.0,
+            color: kColorBlack,
+          ),
+          label: "Favourite",
+        ),
+        const BottomNavigationBarItem(
+          icon: CircleAvatar(
+            radius: 12.5,
+          ),
+          label: "Home",
+        ),
+      ];
+
 }

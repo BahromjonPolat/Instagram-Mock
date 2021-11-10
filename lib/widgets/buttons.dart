@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mockinstagram/components/size_config.dart';
-import 'package:mockinstagram/constants/colors.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
 
 ElevatedButton setElevatedButton(VoidCallback onPressed, String label,

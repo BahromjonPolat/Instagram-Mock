@@ -4,6 +4,7 @@ import 'package:mockinstagram/components/logo.dart';
 import 'package:mockinstagram/components/size_config.dart';
 import 'package:mockinstagram/components/size_spacing.dart';
 import 'package:mockinstagram/constants/colors.dart';
+import 'package:mockinstagram/screens/home/home_page.dart';
 import 'package:mockinstagram/widgets/buttons.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
 
@@ -15,11 +16,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +30,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  AppBar _buildAppBar() =>
-      AppBar(
+  AppBar _buildAppBar() => AppBar(
         elevation: 0.0,
         backgroundColor: kColorTransparent,
         iconTheme: const IconThemeData(color: kColorBlack),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       );
 
-  _buildBody() =>
-      Padding(
+  _buildBody() => Padding(
         padding:
-        EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(16.0)),
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(16.0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -53,12 +50,9 @@ class _LoginPageState extends State<LoginPage> {
             _showForgotPasswordButton(),
             setHeight(22.0),
             setElevatedButton(
-                  () {},
+              _onLoginButtonPressed,
               "Log in",
-              size: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              size: MediaQuery.of(context).size.width,
             ),
             setHeight(30.5),
             _loginWithFacebook(),
@@ -68,8 +62,11 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SetTextWidget("Don't have an account?", textColor: kColorBlackWithOpacity,),
-                setTextButton(() { }, "Sign up.", color: kColorBlue)
+                SetTextWidget(
+                  "Don't have an account?",
+                  textColor: kColorBlackWithOpacity,
+                ),
+                setTextButton(() {}, "Sign up.", color: kColorBlue)
               ],
             ),
           ],
@@ -95,8 +92,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Form _getFormFields() =>
-      Form(
+  Form _getFormFields() => Form(
         key: _formKey,
         child: Column(
           children: [
@@ -118,11 +114,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
-  InputDecoration _setInputDecoration(String hint) =>
-      InputDecoration(
+  InputDecoration _setInputDecoration(String hint) => InputDecoration(
         filled: true,
         fillColor: const Color(0xFFFAFAFA),
-        contentPadding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15.0)),
+        contentPadding:
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15.0)),
         hintText: hint,
         hintStyle: TextStyle(
             color: const Color(0x33000000),
@@ -133,8 +129,7 @@ class _LoginPageState extends State<LoginPage> {
         focusedBorder: _setBorder(),
       );
 
-  OutlineInputBorder _setBorder() =>
-      OutlineInputBorder(
+  OutlineInputBorder _setBorder() => OutlineInputBorder(
         borderRadius: BorderRadius.circular(5.0),
         borderSide: const BorderSide(
           color: kColorBlackWithOpacity,
@@ -146,25 +141,31 @@ class _LoginPageState extends State<LoginPage> {
     return [
       Center(
           child: Padding(
-            padding: EdgeInsets.all(getProportionateScreenHeight(24.5)),
-            child: SetTextWidget(
-              "Instagram от Facebook",
-              textColor: kColorBlackWithOpacity,
-            ),
-          ))
+        padding: EdgeInsets.all(getProportionateScreenHeight(24.5)),
+        child: SetTextWidget(
+          "Instagram от Facebook",
+          textColor: kColorBlackWithOpacity,
+        ),
+      ))
     ];
   }
 
-  _showDivider() =>
-      Row(
+  _showDivider() => Row(
         children: [
           const Expanded(child: Divider()),
           setWidth(30.5),
-          SetTextWidget("OR", textColor: kColorBlackWithOpacity,
+          SetTextWidget(
+            "OR",
+            textColor: kColorBlackWithOpacity,
             size: 12.0,
-            weight: FontWeight.w600,),
+            weight: FontWeight.w600,
+          ),
           setWidth(30.5),
           const Expanded(child: Divider()),
         ],
       );
+
+  void _onLoginButtonPressed() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+  }
 }
