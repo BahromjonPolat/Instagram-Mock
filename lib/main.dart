@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mockinstagram/constants/colors.dart';
-import 'package:mockinstagram/screens/auth/login_page.dart';
+import 'package:mockinstagram/screens/auth/initial_page.dart';
 import 'package:mockinstagram/screens/home/home_page.dart';
 
 void main() async {
@@ -29,8 +29,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         primaryColor: kColorBlue,
+        fontFamily: "SFPro",
+        brightness: Brightness.light,
       ),
-      home: const LoginPage(),
+      home: const InitialPage(),
     );
   }
 }

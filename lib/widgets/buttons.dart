@@ -4,15 +4,18 @@ import 'package:mockinstagram/components/size_config.dart';
 import 'package:mockinstagram/constants/colors.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
 
-ElevatedButton setElevatedButton(VoidCallback onPressed, String label) =>
+ElevatedButton setElevatedButton(VoidCallback onPressed, String label,
+        {double? size}) =>
     ElevatedButton(
       onPressed: onPressed,
       child: Text(label),
       style: ElevatedButton.styleFrom(
-        padding:
-            EdgeInsets.symmetric(vertical: getProportionateScreenHeight(14.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        padding: EdgeInsets.symmetric(
+          vertical: getProportionateScreenHeight(14.0),
+        ),
         fixedSize: Size(
-          getProportionateScreenWidth(307),
+          getProportionateScreenWidth(size ?? 307),
           getProportionateScreenWidth(44),
         ),
       ),
@@ -25,10 +28,11 @@ TextButton setTextButton(
   double? size,
 }) =>
     TextButton(
-        onPressed: onPressed,
-        child: SetTextWidget(
-          label,
-          weight: FontWeight.bold,
-          textColor: color,
-          size: size,
-        ));
+      onPressed: onPressed,
+      child: SetTextWidget(
+        label,
+        weight: FontWeight.bold,
+        textColor: color,
+        size: size,
+      ),
+    );
