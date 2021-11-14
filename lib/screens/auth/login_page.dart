@@ -18,7 +18,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final GlobalKey<FormState> _formLoginKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formSignUpKey = GlobalKey<FormState>();
+
+  bool _isLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
       persistentFooterButtons: _buildFooter(),
-      body: _buildBody(),
+      body: _isLogin ? _buildLoginPageBody() : _buildSignUpPageBody(),
     );
   }
 
@@ -37,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       );
 
-  _buildBody() => Padding(
+  _buildLoginPageBody() => Padding(
         padding:
             EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(16.0)),
         child: Column(
@@ -45,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             getLogoText(),
             setHeight(39.0),
-            _getFormFields(),
+            _getLoginFormFields(),
             setHeight(11.0),
             _showForgotPasswordButton(),
             setHeight(22.0),
@@ -59,16 +64,49 @@ class _LoginPageState extends State<LoginPage> {
             setHeight(33.0),
             _showDivider(),
             setHeight(33.50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SetTextWidget(
-                  "Don't have an account?",
-                  textColor: kColorBlackWithOpacity,
-                ),
-                setTextButton(() {}, "Sign up.", color: kColorBlue)
-              ],
+            _changePageRow(),
+          ],
+        ),
+      );
+
+  Row _changePageRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SetTextWidget(
+          _isLogin ? "Don't have an account?" : "Have an account?",
+          textColor: kColorBlackWithOpacity,
+        ),
+        setTextButton(_changePage, _isLogin ? "Sign up." : "Log in",
+            color: kColorBlue)
+      ],
+    );
+  }
+
+  void _changePage() {
+    setState(() {
+      _isLogin = !_isLogin;
+    });
+  }
+
+  _buildSignUpPageBody() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            getLogoText(),
+            setHeight(57.0),
+            _getSignUpFormFields(),
+            setHeight(11.0),
+            _showForgotPasswordButton(),
+            setHeight(22.0),
+            setElevatedButton(
+              _onLoginButtonPressed,
+              "Sign up",
+              size: MediaQuery.of(context).size.width,
             ),
+            _loginWithFacebook(),
+            _showDivider(),
+            _changePageRow(),
           ],
         ),
       );
@@ -92,8 +130,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Form _getFormFields() => Form(
-        key: _formKey,
+  Form _getLoginFormFields() => Form(
+        key: _formLoginKey,
         child: Column(
           children: [
             TextFormField(
@@ -114,11 +152,48 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
+  Form _getSignUpFormFields() => Form(
+        key: _formSignUpKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _nameController,
+              keyboardType: TextInputType.name,
+              textInputAction: TextInputAction.next,
+              decoration: _setInputDecoration("Full name"),
+            ),
+            setHeight(12.0),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              decoration: _setInputDecoration("Email"),
+            ),
+            setHeight(12.0),
+            TextFormField(
+              controller: _usernameController,
+              keyboardType: TextInputType.name,
+              textInputAction: TextInputAction.next,
+              decoration: _setInputDecoration("Username"),
+            ),
+            setHeight(12.0),
+            TextFormField(
+              controller: _passwordController,
+              keyboardType: TextInputType.visiblePassword,
+              textInputAction: TextInputAction.done,
+              obscureText: true,
+              decoration: _setInputDecoration("Password"),
+            ),
+          ],
+        ),
+      );
+
   InputDecoration _setInputDecoration(String hint) => InputDecoration(
         filled: true,
         fillColor: const Color(0xFFFAFAFA),
-        contentPadding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15.0)),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: getProportionateScreenWidth(15.0),
+        ),
         hintText: hint,
         hintStyle: TextStyle(
             color: const Color(0x33000000),

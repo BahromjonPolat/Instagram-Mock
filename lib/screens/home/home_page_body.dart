@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mockinstagram/components/size_config.dart';
 import 'package:mockinstagram/components/size_spacing.dart';
 import 'package:mockinstagram/constants/colors.dart';
+import 'package:mockinstagram/widgets/buttons.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
 
 class HomePageBody extends StatefulWidget {
@@ -31,7 +33,10 @@ class _HomePageBodyState extends State<HomePageBody> {
             Image.network(
               "https://source.unsplash.com/random/55",
               width: MediaQuery.of(context).size.width,
-            )
+              height: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+            _showPostFooter(),
           ],
         );
       },
@@ -47,11 +52,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 11.5),
                     alignment: Alignment.center,
-                    width: getProportionateScreenWidth(56.0),
-                    height: getProportionateScreenWidth(56.0),
+                    width: getProportionateScreenWidth(62.0),
+                    height: getProportionateScreenWidth(62.0),
                     decoration: BoxDecoration(
                       color: Colors.purple,
                       borderRadius: BorderRadius.circular(100.0),
+                      border: Border.all(color: Colors.red, width: 2.0),
                       image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(
@@ -88,4 +94,17 @@ class _HomePageBodyState extends State<HomePageBody> {
           color: kColorBlack,
         ),
       );
+  
+  _showPostFooter() =>
+      Row(
+        children: [
+          setIconButton((){}, CupertinoIcons.heart),
+          setIconButton((){}, CupertinoIcons.chat_bubble),
+          setIconButton((){}, CupertinoIcons.arrowshape_turn_up_right),
+          const Spacer(),
+          setIconButton(() { }, Icons.bookmark_outline)
+        ],
+
+
+  );
 }
