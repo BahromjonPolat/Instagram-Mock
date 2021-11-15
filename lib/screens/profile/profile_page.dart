@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mockinstagram/models/user_model.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  ProfilePage({Key? key}) : super(key: key);
+
+  UserModel? _userModel;
 
   @override
   Widget build(BuildContext context) {
+    _getUserModel();
     return CustomScrollView(
       slivers: [
         _showHeader(),
@@ -25,6 +31,7 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 43.0,
+                    backgroundImage: AssetImage("assets/images/blank_profile_male.png"),
                   ),
                   _setUserFollowingData("22", "Posts"),
                   _setUserFollowingData("86", "Followers"),
@@ -39,11 +46,10 @@ class ProfilePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SetTextWidget(
-                    "Bahromjon Po'lat",
+                  "Bahromjon Po'lat",
                     size: 12.0,
                     weight: FontWeight.w600,
                   ),
-
                   SetTextWidget(
                     "Digital goodies designer @bahromjon_polat",
                     size: 12.0,
@@ -56,7 +62,10 @@ class ProfilePage extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () {},
-                    child: SetTextWidget("Edit profile", weight: FontWeight.w600,),
+                    child: SetTextWidget(
+                      "Edit profile",
+                      weight: FontWeight.w600,
+                    ),
                   )
                 ],
               ),
@@ -75,4 +84,13 @@ class ProfilePage extends StatelessWidget {
           SetTextWidget(bottomText, size: 13.0, weight: FontWeight.w400),
         ],
       );
+
+  _getUserModel() async {
+    FirebaseAuth mAuth = FirebaseAuth.instance;
+    FirebaseFirestore fireStore = FirebaseFirestore.instance;
+    DocumentSnapshot snapshot =
+        await fireStore.doc("instagramUsers/" + mAuth.currentUser!.uid).get();
+    Map<String, dynamic> userMap = snapshot.data() as Map<String, dynamic>;
+    _userModel = UserModel.fromJson(userMap);
+  }
 }

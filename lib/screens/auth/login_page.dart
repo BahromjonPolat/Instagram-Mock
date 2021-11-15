@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mockinstagram/components/logo.dart';
 import 'package:mockinstagram/components/size_config.dart';
 import 'package:mockinstagram/components/size_spacing.dart';
 import 'package:mockinstagram/constants/colors.dart';
+import 'package:mockinstagram/models/user_model.dart';
 import 'package:mockinstagram/screens/home/home_page.dart';
 import 'package:mockinstagram/widgets/buttons.dart';
 import 'package:mockinstagram/widgets/text_widgets.dart';
@@ -24,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formSignUpKey = GlobalKey<FormState>();
 
   bool _isLogin = true;
+
+  final FirebaseAuth _mAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             _showForgotPasswordButton(),
             setHeight(22.0),
             setElevatedButton(
-              _onLoginButtonPressed,
+              _onSignUpButtonPressed,
               "Sign up",
               size: MediaQuery.of(context).size.width,
             ),
@@ -139,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: _setInputDecoration("Email"),
+              validator: _checkField,
             ),
             setHeight(12.0),
             TextFormField(
@@ -147,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
               textInputAction: TextInputAction.done,
               obscureText: true,
               decoration: _setInputDecoration("Password"),
+              validator: _checkField,
             ),
           ],
         ),
@@ -161,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
               decoration: _setInputDecoration("Full name"),
+              validator: _checkField,
             ),
             setHeight(12.0),
             TextFormField(
@@ -168,6 +177,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               decoration: _setInputDecoration("Email"),
+              validator: _checkField,
             ),
             setHeight(12.0),
             TextFormField(
@@ -175,6 +185,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.name,
               textInputAction: TextInputAction.next,
               decoration: _setInputDecoration("Username"),
+              validator: _checkField,
             ),
             setHeight(12.0),
             TextFormField(
@@ -183,6 +194,7 @@ class _LoginPageState extends State<LoginPage> {
               textInputAction: TextInputAction.done,
               obscureText: true,
               decoration: _setInputDecoration("Password"),
+              validator: _checkField,
             ),
           ],
         ),
@@ -240,7 +252,76 @@ class _LoginPageState extends State<LoginPage> {
         ],
       );
 
-  void _onLoginButtonPressed() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+  void _onLoginButtonPressed()async {
+
+    if (!_formLoginKey.currentState!.validate()) {
+      Fluttertoast.showToast(msg: "Please, Fill all fields");
+      return;
+    }
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Fluttertoast.showToast(msg: 'No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        Fluttertoast.showToast(msg: 'Wrong password provided for that user.');
+      }
+    }
+
+
+  }
+
+  void _onSignUpButtonPressed() async {
+    if (!_formSignUpKey.currentState!.validate()) {
+      Fluttertoast.showToast(msg: "Please, Fill all fields");
+      return;
+    }
+
+    String name = _nameController.text.trim();
+    String email = _emailController.text.trim();
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+
+    await _mAuth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .whenComplete(() async {
+      UserModel user = UserModel(
+        _mAuth.currentUser!.uid,
+        name,
+        email,
+        password,
+        'default',
+        username,
+        'user',
+        false,
+      );
+
+      FirebaseFirestore fireStore = FirebaseFirestore.instance;
+      fireStore
+          .collection("instagramUsers")
+          .doc(_mAuth.currentUser!.uid)
+          .set(user.toMap());
+
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (_) => const HomePage()), (route) => false);
+    });
+  }
+
+  /// FORM FIELD VALIDATOR
+  String? _checkField(String? fieldContent) {
+    if (fieldContent!.isEmpty) {
+      return 'Please, fill field';
+    }
+
+    if (fieldContent.length < 3) {
+      return 'Minimum 3 characters';
+    }
+    return null;
   }
 }

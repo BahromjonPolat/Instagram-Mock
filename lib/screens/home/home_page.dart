@@ -14,7 +14,9 @@ import 'package:mockinstagram/screens/upload/upload_page.dart';
 import 'package:mockinstagram/widgets/bottom_navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
+
   const HomePage({Key? key}) : super(key: key);
+
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     const SearchPage(),
     const UploadPage(),
     const FavouritesPage(),
-    const ProfilePage(),
+     ProfilePage(),
   ];
   Widget _currentPage() => _pageList()[_currentIndex!];
 }
